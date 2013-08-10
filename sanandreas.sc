@@ -2,6 +2,18 @@
 s.options.memSize = 650000;
 s.boot;
 s.scope;
+~len=180;
+~maketimer = {
+	arg len=180;
+	var timer;
+	timer = ();
+	timer.bus = Bus.control;
+	timer.line = {Out.kr(timer.bus, Line.kr(0,1,len))}.play;
+	timer;
+};
+
+~timer = ~maketimer.(len: 180);
+~timer.bus.get;
 
 SynthDef("ThreeOsc",
 	{ 
@@ -10,38 +22,53 @@ SynthDef("ThreeOsc",
 		var ee = EnvGen.kr(Env.linen(0.3, 0.1, 0.1), doneAction: 2);
 		Out.ar(out,
 			Mix.ar([
-				SinOsc.ar(30+r/255*100,mul:amp/3.0),
-				Saw.ar(30+g/255*100,mul:amp/3.0),
-				Pulse.ar(30+b/255*100,mul:amp/3.0)
-			]) * ee
+				SinOsc.ar(30+r/255*1400,mul:amp/3.0),
+				Saw.ar(30+g/255*1400,mul:amp/3.0),
+				Pulse.ar(30+b/255*1400,mul:amp/3.0)
+			]) * ee!2
 		);
 	}
-).load(s)
+).load(s);
 
 SynthDef("ThreeOscLong",
 	{ 
-		arg out=0,amp=0.3,r=0,g=0,b=0,gate=1;
-		//var ee = EnvGen.kr( Env.adsr( 0.1, 0.3, 0.5, 1), gate, doneAction: 2);		
-		//var ee = EnvGen.kr(Env.linen(0.3, 0.1, 0.1), doneAction: 2);
+		arg out=0,amp=0.3,r=0,g=0,b=0,gate=0,mix=0,room=0;
+		//var ee = EnvGen.kr( Env.adsr( 0.1, 0.3, 0.5, 1), Dust.ar(20));
+		//var ee = EnvGen.kr(Env.linen(0.3, 0.5, 0.5), gate);//+Dust.ar(1));//gate, doneAction: 0);
+		var sinm, sawm, pulsem;
+		sinm = SinOsc.kr(0.1+0.3*r,mul:255,phase:0.3);
+		sawm = SinOsc.kr(0.1+0.6*g,mul:255,phase:0.1);
+		pulsem = SinOsc.kr(0.1+0.9*b,mul:255,phase:0.9);
 		Out.ar(out,
-			Mix.ar([
-				SinOsc.ar(30+(r/255*1000)%80,mul:amp/3.0),
-				Saw.ar(30+g/255*100,mul:amp/3.0),
-				Pulse.ar(30+b/255*100,mul:amp/3.0)
-			])
+			FreeVerb.ar(
+				//ee * 
+				Mix.ar([
+					SinOsc.ar(255+20+sinm,mul:amp/3.0),
+					Saw.ar(255+20+sawm,mul:amp/3.0),
+					Pulse.ar(255+20+pulsem,mul:amp/3.0)
+				])
+				, mix: mix
+				, room: room
+			)!2
 		);
 	}
 ).load(s);
 
 ~threelong = Synth.new("ThreeOscLong");
+~threelong.map(\mix, ~timer.bus);
+~threelong.map(\room, ~timer.bus);
+~timer.bus.get;
 
 ~colour = { |msg|
-	~threelong.set(\r,msg[0]);
-	~threelong.set(\g,msg[1]);
-	~threelong.set(\b,msg[2]);
-	~threelong.set(\r,msg[3]);
-
-	//Synth.new("ThreeOsc",[\r,msg[0],\g,msg[1],\b,msg[2]]);
+	//msg[0].pushln;
+	~threelong.set(\r,msg[1]);
+	~threelong.set(\g,msg[2]);
+	~threelong.set(\b,msg[3]);
+	//~threelong.set(\gate, 1);
+	//~threelong.set(\gate, 0);
+	//~threelong.set(\r,msg[3]);
+	//Synth.new("ThreeOsc",[\r,msg[4],\g,msg[5],\b,msg[6],\amp,0.1]);
+	//Synth.new("ThreeOsc",[\r,msg[5],\g,msg[6],\b,msg[7],\amp,0.1]);
 };
 
 

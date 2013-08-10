@@ -197,8 +197,8 @@ function ImageMap( imgFile ) {
         }
     };
     this.install = function() {        
-        window.setInterval(function() { self.step()  },100);
         self.mouseinstall();
+        window.setInterval(function() { self.step()  },33);
     };
     this.img.onload = function() {
         self.imgLoaded = true;
