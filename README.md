@@ -22,3 +22,17 @@ Video
 =====
 
 http://youtu.be/URRvdZCCmYk
+
+Running it
+==========
+
+Using mojolicious you can avoid Mongrel2 altogether.
+
+cpan hypnotoad
+cpan Net::OpenSoundControl::Client
+
+Then
+
+hypnotoad -f oscrelay.pl
+
+and you're good to go!
