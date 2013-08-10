@@ -52,6 +52,7 @@ function randInt(i) {
     return Math.floor( Math.random() * i );
 }
 var host = window.location.hostname;
+var port = window.location.port;
 var buttonDown = false;
 
 function harb(msg) {
@@ -69,7 +70,7 @@ function harb(msg) {
             }
         }
     };
-	xhr.open("POST","http://"+host+"/sanandreas");
+	xhr.open("POST","http://"+host+":"+port+"/sanandreas");
     xhr.overrideMimeType("application/json");
     xhr.setRequestHeader('Accept', 'application/json');
 	xhr.send( JSON.stringify( msg ) );

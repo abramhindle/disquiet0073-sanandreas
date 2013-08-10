@@ -17,3 +17,8 @@ Description
 An overcomplicated webservice that reports what colours you are dragging over communicates this information to a supercollider instrument consisting of 3 oscillators being manipulated by RGB pixel values.
 
 I dragged my mouse cusor over the image of the fault and then pixel data was converted into some sort of music.
+
+Video
+=====
+
+http://youtu.be/URRvdZCCmYk
